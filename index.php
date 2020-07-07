@@ -1,22 +1,28 @@
 <?php
+session_start();
 
+define('ROOT_DIR', __DIR__);
+define('APP_URL', 'http://projet-final-diego.test/');
 
-$status = @shell_exec('svnversion '.realpath(__FILE__));
-if ( preg_match('/\d+/', $status, $match) ) {
-    echo 'Revision: '.$match[0];
-}
+#-> Loading dependencies
+require __DIR__ . '/core/bootstrap.php';
 
+#-> Simple routes
+$request = $_SERVER['REQUEST_URI'];
 
-$directory = ".";
-
-// Open a directory, and read its contents
-if (is_dir($directory)){
-  if ($opendirectory = opendir($directory)){
-    while (($file = readdir($opendirectory)) !== false){
-      #echo "filename:" . $file . "<br>";
-	  echo "<a href=" . $file . ">" . $file . "</a><br>";
+try {
+    switch ($request) {
+        case "/":
+            return route("GET", "LoginController", "index");
+            break;
+        case "/registrar":
+            return route("POST", "LoginController", "login");
+            break;
+        case "/home":
+            return route("GET", "HomeController", "index");
+            break;
     }
-    closedir($opendirectory);
-  }
+} catch (Exception $e) {
+    echo "<pre>";
+    die(print_r($e));
 }
-?>
